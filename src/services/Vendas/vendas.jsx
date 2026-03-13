@@ -25,6 +25,7 @@ export default function Vendas() {
   const [erroForm, setErroForm] = useState("")
   const [changeStatus, setchangeStatus] = useState(false)
   const [id, setID] = useState()
+  const [id2, setID2] = useState()
 
   // Repositórios
   const repVendas = new repositorioVenda()
@@ -313,10 +314,11 @@ const totalVendas = vendasFiltradas.reduce((acc, v) => acc + v.valor_total, 0)
 const totalProdutos = vendasFiltradas.reduce((acc, v) => acc + (v.itensVenda?.reduce((a, i) => a + Number(i.quantidade), 0) || 0), 0)
 const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").reduce((acc, v) => acc + v.valor_total, 0)
   // Mudar status da venda
-  async function ChangeStt(params) {
+  async function ChangeStt(params,id2) {
     try {
       setCarregando(true)
       await repVendas.editar2(params, "Pago")
+      await repCliente.editar2(id2, "Pago")
       setchangeStatus(false)
     } catch {
       window.alert("Erro")
@@ -434,6 +436,7 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
                               if (venda.status_p === "Em_Divida") {
                                 setchangeStatus(true);
                                 setID(venda.idvendas);
+                                setID2(venda.cliente.idclientes);
                               }
                             }}
                           >
@@ -606,7 +609,7 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
                   Deseja Liquidar a Dívida {id}?
                 </h1>
                 <div className="flex gap-4 w-full justify-center">
-                  <button onClick={()=>ChangeStt(id)} className="bg-gradient-to-r from-green-400 to-green-600 hover:scale-105 transform transition-all duration-200 text-white font-semibold px-6 py-2 rounded-2xl shadow-lg">
+                  <button onClick={()=>ChangeStt(id,id2)} className="bg-gradient-to-r from-green-400 to-green-600 hover:scale-105 transform transition-all duration-200 text-white font-semibold px-6 py-2 rounded-2xl shadow-lg">
                     Sim
                   </button>
                   <button onClick={()=>setchangeStatus(false)} className="bg-gradient-to-r from-red-400 to-red-600 hover:scale-105 transform transition-all duration-200 text-white font-semibold px-6 py-2 rounded-2xl shadow-lg">
