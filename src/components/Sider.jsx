@@ -69,10 +69,10 @@ export default function Sidebar() {
           <ul className="space-y-2 divide-y divide-gray-700/40">
             {[
               { name: "Dashboard", icon: HomeIcon, to: "/" },
-              { name: "Clientes", icon: UserIcon, to: "/Clientes" },
-              { name: "Mercadorias", icon: ShoppingCartIcon, to: "/Mercadorias" },
-              { name: "Vendas", icon: CubeIcon, to: "/Vendas" },
-              { name: "Stock", icon: CubeIcon, to: "/Stock" },
+              { name: "Clientes", icon: UserIcon, to: "/clientes" },
+              { name: "Mercadorias", icon: ShoppingCartIcon, to: "/mercadorias" },
+              { name: "Vendas", icon: CubeIcon, to: "/mendas" },
+              { name: "Stock", icon: CubeIcon, to: "/stock" },
               // { name: "Configurações", icon: CogIcon, to: "#" },
             ].map((item, idx) => (
               <li key={idx} className="group py-2">

@@ -11,10 +11,10 @@ export default function BrowseRouter() {
     <Router>
         <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/Vendas" element={<Vendas />} />
-            <Route path="/Mercadorias" element={<Mercadorias />} />
-            <Route path="/Stock" element={<Stock />} />
-            <Route path="/Clientes" element={<Clientes />} />
+        <Route path="/vendas" element={<Vendas />} />
+<Route path="/mercadorias" element={<Mercadorias />} />
+<Route path="/stock" element={<Stock />} />
+<Route path="/clientes" element={<Clientes />} />
         </Routes>
     </Router>
   )
