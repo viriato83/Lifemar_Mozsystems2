@@ -312,6 +312,7 @@ export default function Clientes() {
                             <th>Produtos</th>
                             <th>Quantidade</th>
                             <th>Valor Total</th>
+                            <th>Estado</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -321,6 +322,7 @@ export default function Clientes() {
                               <td>{v.itensVenda.map(i => i.mercadorias.nome).join(", ")}</td>
                               <td>{v.itensVenda.map(i => i.quantidade).join(", ")}</td>
                               <td>{Number(v.valor_total).toLocaleString('pt-MZ', { style: 'currency', currency: 'MZN' })}</td>
+                              <td>{v.status_p}</td>
                             </tr>
                           ))}
                         </tbody>

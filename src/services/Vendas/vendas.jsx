@@ -293,7 +293,7 @@ const mercadoriaOptions = mercadoria
 const [dataInicio, setDataInicio] = useState("")
 const [dataFim, setDataFim] = useState("")
 
-// Filtra vendas por pesquisa e data
+// 3️⃣ Alterar vendasFiltradas para aplicar o filtro
 const vendasFiltradas = vendas
   .filter(v =>
     (v.itensVenda?.some(i => i.mercadorias?.nome?.toLowerCase().includes(pesquisa.toLowerCase())) ||
@@ -307,6 +307,8 @@ const vendasFiltradas = vendas
     if (fim && vendaDate > fim) return false
     return true
   })
+  // ✅ Aplica filtro de dívidas se estiver ativo
+  .filter(v => !mostrarDivida || v.status_p === "Em_Divida")
   .sort((a, b) => new Date(b.data) - new Date(a.data))
 
 // Totais
@@ -327,7 +329,7 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
       window.location.reload()
     }
   }
-
+const [mostrarDivida, setMostrarDivida] = useState(false);
   return (
     <Container>
       <Sidebar />
@@ -394,6 +396,16 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
                 onChange={(e) => setPesquisa(e.target.value)}
                 className="border bg-white border-gray-300 p-2 rounded-xl flex-1 focus:ring-2 focus:ring-blue-400 transition"
               />
+              {/* Checkbox para filtrar vendas em dívida */}
+            <label className="flex items-center gap-2 text-gray-100">
+              <input
+                type="checkbox"
+                checked={mostrarDivida}
+                onChange={() => setMostrarDivida(!mostrarDivida)}
+                className="w-4 h-4"
+              />
+              Apenas Vendas em Dívida
+            </label>
             </div>
             {/* TABELA DE VENDAS */}
             <div className="bg-white shadow rounded-xl overflow-x-auto text-gray-900">
