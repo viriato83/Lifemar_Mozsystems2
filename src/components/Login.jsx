@@ -106,7 +106,7 @@ export default function Login({ children }) {
           <img src={logo} className="w-20 mx-auto mb-4"/>
 
           <h1 className="text-2xl font-semibold text-white">
-            Aquafish System
+            Lifemar System
           </h1>
 
           <p className="text-gray-400 text-sm">
@@ -187,7 +187,7 @@ export default function Login({ children }) {
 
         <p className="text-center text-gray-500 text-xs mt-6">
 
-          © {new Date().getFullYear()} Aquafish • Moz Systems
+          © {new Date().getFullYear()} Lifemar • Moz Systems
 
         </p>
 
