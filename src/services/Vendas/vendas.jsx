@@ -293,6 +293,7 @@ const mercadoriaOptions = mercadoria
 const [dataInicio, setDataInicio] = useState("")
 const [dataFim, setDataFim] = useState("")
 
+const [mostrarDivida, setMostrarDivida] = useState(false);
 // 3️⃣ Alterar vendasFiltradas para aplicar o filtro
 const vendasFiltradas = vendas
   .filter(v =>
@@ -329,7 +330,6 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
       window.location.reload()
     }
   }
-const [mostrarDivida, setMostrarDivida] = useState(false);
   return (
     <Container>
       <Sidebar />
