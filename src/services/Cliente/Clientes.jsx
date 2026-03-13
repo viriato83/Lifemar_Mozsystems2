@@ -153,7 +153,7 @@ export default function Clientes() {
   const verHistorico = (cliente) => {
     setClienteSelecionado(cliente)
     const historico = vendas
-      .filter(v => v.cliente.id === cliente.id)
+      .filter(v => v.cliente.idclientes === cliente.idclientes)
       .sort((a, b) => new Date(b.data) - new Date(a.data)) // mais recente primeiro
     setHistoricoCliente(historico)
     setModalAberto(true)
