@@ -22,7 +22,7 @@ export default function Mercadorias() {
   const [stocks, setStocks] = useState([])
   const [filtroStock, setFiltroStock] = useState(null)
   const [filtroData, setFiltroData] = useState({ inicio: "", fim: "" })
-
+  const usuario= sessionStorage.getItem("idusuarios");
   const [form, setForm] = useState({
     nome: "",
     tipo: "",
@@ -87,7 +87,7 @@ const stockOptions = stocks
     form.data_entrada,
     form.valor_un,
     null,
-    1,
+    usuario,
     form.stock
   )
 

@@ -51,7 +51,7 @@ export default function Vendas() {
     valor_uni: "",
     index: null
   })
-
+  const usuario= sessionStorage.getItem("idusuarios");
   // Leitura inicial dos dados
   useEffect(() => {
     async function read() {
@@ -149,7 +149,7 @@ const mercadoriaOptions = mercadoria
       valorUnitario: Number(p.preco)
     }))
 
-    const novaVenda = new VendasObj(form.data, form.cliente, mercadorias, form.estado, 1, itens)
+    const novaVenda = new VendasObj(form.data, form.cliente, mercadorias, form.estado,usuario, itens)
 
     try {
       await repVendas.cadastrar(novaVenda)
