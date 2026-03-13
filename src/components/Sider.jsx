@@ -71,7 +71,7 @@ export default function Sidebar() {
               { name: "Dashboard", icon: HomeIcon, to: "/" },
               { name: "Clientes", icon: UserIcon, to: "/clientes" },
               { name: "Mercadorias", icon: ShoppingCartIcon, to: "/mercadorias" },
-              { name: "Vendas", icon: CubeIcon, to: "/mendas" },
+              { name: "Vendas", icon: CubeIcon, to: "/vendas" },
               { name: "Stock", icon: CubeIcon, to: "/stock" },
               // { name: "Configurações", icon: CogIcon, to: "#" },
             ].map((item, idx) => (
