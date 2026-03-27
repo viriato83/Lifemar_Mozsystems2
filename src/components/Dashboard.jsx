@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import * as XLSX from "xlsx"
+import { saveAs } from "file-saver"
+
 import {
   LineChart,
   Line,
@@ -22,6 +25,7 @@ import ClienteRepository from "../services/Cliente/ClienteRepository"
 import repositorioMercadoria from "../services/Mercadoria/Repositorio"
 import { Wind } from "lucide-react"
 import Spinner from "./Spinner"
+import Swal from "sweetalert2"
 
 export default function Dashboard() {
 
@@ -39,7 +43,7 @@ export default function Dashboard() {
   const [stockAtual, setStockAtual] = useState(0)
   const [ultimasVendas, setUltimasVendas] = useState([])
   const [mercadoriasRecentes, setMercadoriasRecentes] = useState([])
-
+  const [vendasFiltradas, setVendasFiltradas] = useState([])
   const [clientesComDivida, setClientesComDivida] = useState([])
 
   const [totalVendas, setTotalVendas] = useState(0)
@@ -147,7 +151,7 @@ merc.forEach(item => {
             )
           })
         }
-        
+        setVendasFiltradas(vendasFiltradas)
         setUltimasVendas(
           vendasFiltradas.slice(-5).reverse()
         )
@@ -246,6 +250,15 @@ merc.forEach(item => {
       }
       
       function aplicarFiltro() {
+        if(!dataInicio || !dataFim){
+         
+          Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Selecione o intervalo das datas que deseja filtrar!",
+          
+        });
+        }
         processarVendas(vendas, clientes)
       }
       
@@ -265,6 +278,76 @@ merc.forEach(item => {
       
   /* ---------------- UI ---------------- */
 
+/* ---------------- EXPORTAR VENDAS ---------------- */
+
+function exportarVendasExcel() {
+
+  let dados = []
+
+  vendasFiltradas.forEach(v => {
+
+    v.itensVenda.forEach(item => {
+
+      dados.push({
+        Venda_ID: v.idvendas,
+        Cliente: v.cliente?.nome,
+        Data: new Date(v.data).toLocaleDateString(),
+
+        Produto_ID: item.mercadorias.idmercadoria,
+        Produto: item.mercadorias.nome,
+
+        Quantidade: item.quantidade,
+        Preco_Unitario: item.valorUnitario ?? item.valor_uni,
+
+        Total_Item: (item.quantidade * (item.valorUnitario ?? item.valor_uni)).toFixed(2),
+
+        Total_Venda: v.valor_total,
+        Status: v.status_p
+      })
+
+    })
+
+  })
+
+  const worksheet = XLSX.utils.json_to_sheet(dados)
+  const workbook = XLSX.utils.book_new()
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatorio_Vendas")
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array"
+  })
+
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" })
+
+  saveAs(blob, "Relatorio_Vendas_Detalhado_Aquafish.xlsx")
+}
+/* ---------------- EXPORTAR MERCADORIAS ---------------- */
+
+function exportarMercadoriasExcel() {
+
+  const dados = mercadoriasRecentes.map(m => ({
+    ID: m.idmercadoria,
+    Nome: m.nome,
+    Quantidade: m.quantidade,
+    Data_Entrada: new Date(m.data_entrada).toLocaleDateString()
+  }))
+
+  const worksheet = XLSX.utils.json_to_sheet(dados)
+  const workbook = XLSX.utils.book_new()
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Mercadorias")
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array"
+  })
+
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" })
+
+  saveAs(blob, "Relatorio_Mercadorias_COMPLETO.xlsx")
+}
   return (
     <Container>
     <Sidebar />
@@ -273,6 +356,25 @@ merc.forEach(item => {
       <main className="flex-1 p-6 bg-gray-950 text-gray-100 min-h-screen">
 
         {/* FILTROS */}
+        {/* EXPORTAÇÕES */}
+
+<div className="flex gap-4 mb-6 flex-wrap">
+
+  <button
+    onClick={exportarVendasExcel}
+    className="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-lg shadow-lg font-semibold transition"
+  >
+    📊 Exportar Vendas (Excel)
+  </button>
+
+  <button
+    onClick={exportarMercadoriasExcel}
+    className="bg-yellow-600 hover:bg-yellow-700 px-5 py-2 rounded-lg shadow-lg font-semibold transition"
+  >
+    📦 Exportar Mercadorias (Excel)
+  </button>
+
+</div>
 
         <div className="bg-gray-900 p-4 rounded-lg mb-6 flex flex-wrap gap-4 items-end">
           <div>
@@ -296,7 +398,7 @@ merc.forEach(item => {
           </div>
           <button
             onClick={aplicarFiltro}
-            className="bg-blue-600 px-4 py-2 rounded"
+            className="bg-blue-600 px-4 py-2 rounded cursor-pointer"
           >
             Filtrar
           </button>

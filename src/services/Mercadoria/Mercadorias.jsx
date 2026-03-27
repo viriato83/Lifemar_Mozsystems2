@@ -33,7 +33,7 @@ export default function Mercadorias() {
     data_saida: "",
     stock: null
   })
-
+const [mostrarDisponiveis, setMostrarDisponiveis] = useState(false)
   const repMerc = new repositorioMercadoria()
   const repStk = new repositorioStock()
 
@@ -235,14 +235,19 @@ const stockOptions = stocks
   }
 
   // Filtragem avançada
-  const mercadoriasFiltradas = mercadorias.filter(m => {
+const mercadoriasFiltradas = mercadorias
+  .filter(m => {
     const nomeMatch = m.nome.toLowerCase().includes(pesquisa.toLowerCase())
     const stockMatch = filtroStock ? m.stock?.idstock === filtroStock : true
     const dataInicio = filtroData.inicio ? new Date(filtroData.inicio) <= new Date(m.data_entrada) : true
     const dataFim = filtroData.fim ? new Date(filtroData.fim) >= new Date(m.data_entrada) : true
-     
-    return nomeMatch && stockMatch && dataInicio && dataFim
-  }).sort((a, b) => new Date(b.data_entrada) - new Date(a.data_entrada))
+    
+    // 🔥 NOVO FILTRO
+    const disponivelMatch = mostrarDisponiveis ? Number(m.quantidade) > 0 : true
+
+    return nomeMatch && stockMatch && dataInicio && dataFim && disponivelMatch
+  })
+  .sort((a, b) => new Date(b.data_entrada) - new Date(a.data_entrada))
 
   // Cards resumidos
   const totalMercadorias = mercadorias.length
@@ -318,6 +323,14 @@ const stockOptions = stocks
                 onChange={e => setFiltroData({ ...filtroData, fim: e.target.value })}
                 className="border p-2 rounded-xl bg-white"
               />
+              <label className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border">
+  <input
+    type="checkbox"
+    checked={mostrarDisponiveis}
+    onChange={e => setMostrarDisponiveis(e.target.checked)}
+  />
+  Apenas disponíveis
+</label>
             </div>
 
             {/* TABELA */}
