@@ -171,7 +171,7 @@ const mercadoriaOptions = mercadoria
       console.error(err)
     } finally {
       setSalvando(false)
-          window.location.reload()
+          // window.location.reload()
     }
   }
 
@@ -536,23 +536,29 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
                     }
                     className="flex-1 cursor-pointer"
                   />
-             <input
+ <input
   type="number"
+  step="0.01"
+  min="0.01"
   placeholder="Qtd"
   value={produtoTemp.quantidade}
-  min={1}
   max={
     mercadoriaOptions.find(o => o.value === produtoTemp.produtoId)?.quantidadeDisponivel || undefined
   }
   onChange={e => {
-    let valor = Number(e.target.value)
+    let valor = parseFloat(e.target.value)
+
     const max = mercadoriaOptions.find(o => o.value === produtoTemp.produtoId)?.quantidadeDisponivel
+
     if (max !== undefined && valor > max) valor = max
-    if (valor < 1) valor = 1
+    if (valor < -1.001) valor = 0.01
+
     setProdutoTemp({ ...produtoTemp, quantidade: valor })
   }}
   className="border p-2 rounded w-24"
 />
+
+
                   <input type="number" placeholder="Valor Uni" value={produtoTemp.valor_uni} onChange={e => setProdutoTemp({ ...produtoTemp, valor_uni: e.target.value })} className="border p-2 rounded w-24"/>
                   <button onClick={adicionarProduto} disabled={!produtoTemp.produtoId || !produtoTemp.quantidade || !produtoTemp.valor_uni} className="bg-green-600 text-white px-3 rounded hover:opacity-70">{produtoTemp.index !== null ? "Atualizar" : "+"}</button>
                 </div>
