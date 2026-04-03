@@ -171,7 +171,7 @@ const mercadoriaOptions = mercadoria
       console.error(err)
     } finally {
       setSalvando(false)
-          // window.location.reload()
+          window.location.reload()
     }
   }
 
