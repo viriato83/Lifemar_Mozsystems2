@@ -55,7 +55,7 @@ const [mostrarDisponiveis, setMostrarDisponiveis] = useState(false)
   }, [])
 
 const stockOptions = stocks
-  .filter(s => Number(s.quantidade) > 0) // só stocks com quantidade > 0
+
   .map(s => ({
     value: s.idstock,
     label: `${s.tipo} (Qtd disponível: ${s.quantidade})`,
