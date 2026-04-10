@@ -59,7 +59,7 @@ export default function Clientes() {
     if (!form.nome) return "Informe o nome"
     if (!form.localizacao) return "Informe a localização"
     if (!form.telefone) return "Informe o telefone"
-    if (!form.status_p) return "Informe o status"
+ 
     return ""
   }
 
@@ -73,9 +73,17 @@ export default function Clientes() {
     setSalvando(true)
     setErroForm("")
     try {
+      if(!modoEdicao){
+        setForm({ ...form, status_p: "Pendente" })
       const novoCliente = await repCliente.cadastrar(form)
       setClientes([...clientes, novoCliente])
       fecharModal()
+      }else{
+              const novoCliente = await repCliente.cadastrar(form)
+      setClientes([...clientes, novoCliente])
+      fecharModal()
+        
+      }
     } catch (err) {
       setErroForm("Falha ao cadastrar cliente")
       console.error(err)
@@ -223,7 +231,10 @@ export default function Clientes() {
                         <td>{cliente.nome}</td>
                         <td>{cliente.localizacao}</td>
                         <td>{cliente.telefone?cliente.telefone:" xxxxxxxx"}</td>
-                        <td className={` ${cliente.status_p === "Em_Divida" ? "text-red-500" : "text-green-600"} p-2 rounded text-center  duration-150 `}>{cliente.status_p}</td>
+                        <td className={` ${cliente.status_p === "Em_Divida" ? "text-red-500" : "text-green-600"} p-2 rounded
+                          
+                          ${cliente.status_p === "Pendente" ? "text-yellow-500" : ""}
+                          text-center  duration-150 `}>{cliente.status_p}</td>
                         <td className="space-x-2 w-40 ">
                           <button
                             onClick={() => editarCliente(cliente)}
