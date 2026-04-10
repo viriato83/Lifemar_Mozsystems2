@@ -101,8 +101,11 @@ export default function Clientes() {
       setErroForm("Falha ao atualizar cliente")
       console.error(err)
     } finally {
-      window.location.reload()
-      setSalvando(false)
+    const listaAtualizada = clientes.map(c => 
+  c.id === idEditar ? { ...c, ...form } : c
+)
+setClientes(listaAtualizada)
+fecharModal()
     }
   }
 
