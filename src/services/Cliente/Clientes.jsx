@@ -94,14 +94,14 @@ export default function Clientes() {
     setSalvando(true)
     setErroForm("")
     try {
-      await repCliente.editar(idEditar, form)
-      const novosClientes = clientes.map(c => c.id === idEditar ? { ...c, ...form } : c)
-      setClientes(novosClientes)
+      await repCliente.editar(idEditar, form.status_p)
+      
       fecharModal()
     } catch (err) {
       setErroForm("Falha ao atualizar cliente")
       console.error(err)
     } finally {
+      window.location.reload()
       setSalvando(false)
     }
   }
@@ -282,8 +282,8 @@ export default function Clientes() {
                       <input type="text" placeholder="Telefone" value={form.telefone} onChange={e => setForm({ ...form, telefone: e.target.value })} className="border p-2 rounded flex-1"/>
                       <select value={form.status_p} onChange={e => setForm({ ...form, status_p: e.target.value })} className="border p-2 rounded flex-1 cursor-pointer">
                         <option value="">Status</option>
-                        <option value="ativo">Ativo</option>
-                        <option value="inativo">Inativo</option>
+                        <option value="Pago">Pago</option>
+                        <option value="Em_Divida">Em_Divida</option>
                       </select>
                     </div>
 
