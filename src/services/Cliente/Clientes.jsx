@@ -94,7 +94,7 @@ export default function Clientes() {
     setSalvando(true)
     setErroForm("")
     try {
-      await repCliente.editar(idEditar, form.status_p)
+      await repCliente.editar(idEditar, form)
       
       fecharModal()
     } catch (err) {
@@ -126,7 +126,12 @@ export default function Clientes() {
     setModoEdicao(true)
     setModalAberto(true)
     setIdEditar(cliente.id)
-  
+    setForm({
+      nome: cliente.nome,
+      localizacao: cliente.localizacao,
+      telefone: cliente.telefone,
+      status_p: cliente.status_p
+    })
   }
 
   // Fechar modal
