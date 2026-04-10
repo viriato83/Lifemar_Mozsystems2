@@ -126,12 +126,7 @@ export default function Clientes() {
     setModoEdicao(true)
     setModalAberto(true)
     setIdEditar(cliente.id)
-    setForm({
-      nome: cliente.nome,
-      localizacao: cliente.localizacao,
-      telefone: cliente.telefone,
-      status_p: cliente.status_p
-    })
+  
   }
 
   // Fechar modal
