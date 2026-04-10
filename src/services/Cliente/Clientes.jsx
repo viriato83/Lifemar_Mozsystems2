@@ -80,15 +80,17 @@ export default function Clientes() {
       status_p: "Pendente"
     }
 
-    const novoCliente = await repCliente.cadastrar(clienteComStatus)
+   await repCliente.cadastrar(clienteComStatus)
 
-    setClientes([...clientes, novoCliente])
+
     fecharModal()
 
   } catch (err) {
     setErroForm("Falha ao cadastrar cliente")
+    
     console.error(err)
   } finally {
+    window.location.reload()
     setSalvando(false)
   }
 }
@@ -121,12 +123,14 @@ export default function Clientes() {
     try {
       setCarregando(true)
       await repCliente.deletar(id)
-      setClientes(clientes.filter(c => c.id !== id))
+      // setClientes(clientes.filter(c => c.id !== id))
     } catch (err) {
       window.alert("Erro ao eliminar cliente")
       console.error(err)
     } finally {
+
       setCarregando(false)
+      window.location.reload()
     }
   }
 
@@ -244,7 +248,7 @@ export default function Clientes() {
                             Editar
                           </button>
                           <button
-                            onClick={() => eliminarCliente(cliente.id)}
+                            onClick={() => eliminarCliente(cliente.idclientes)}
                             className="bg-red-500 text-white px-3 py-1 rounded hover:scale-105 transition"
                           >
                             Apagar
