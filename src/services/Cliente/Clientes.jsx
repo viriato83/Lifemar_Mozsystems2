@@ -65,32 +65,33 @@ export default function Clientes() {
 
   // Registrar cliente
   const registrarCliente = async () => {
-    const erro = validarForm()
-    if (erro) {
-      setErroForm(erro)
-      return
-    }
-    setSalvando(true)
-    setErroForm("")
-    try {
-      if(!modoEdicao){
-        setForm({ ...form, status_p: "Pendente" })
-      const novoCliente = await repCliente.cadastrar(form)
-      setClientes([...clientes, novoCliente])
-      fecharModal()
-      }else{
-              const novoCliente = await repCliente.cadastrar(form)
-      setClientes([...clientes, novoCliente])
-      fecharModal()
-        
-      }
-    } catch (err) {
-      setErroForm("Falha ao cadastrar cliente")
-      console.error(err)
-    } finally {
-      setSalvando(false)
-    }
+  const erro = validarForm()
+  if (erro) {
+    setErroForm(erro)
+    return
   }
+
+  setSalvando(true)
+  setErroForm("")
+
+  try {
+    const clienteComStatus = {
+      ...form,
+      status_p: "Pendente"
+    }
+
+    const novoCliente = await repCliente.cadastrar(clienteComStatus)
+
+    setClientes([...clientes, novoCliente])
+    fecharModal()
+
+  } catch (err) {
+    setErroForm("Falha ao cadastrar cliente")
+    console.error(err)
+  } finally {
+    setSalvando(false)
+  }
+}
 
   // Atualizar cliente
   const actualizarCliente = async () => {
