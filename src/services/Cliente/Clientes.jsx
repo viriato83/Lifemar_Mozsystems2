@@ -101,11 +101,8 @@ export default function Clientes() {
       setErroForm("Falha ao atualizar cliente")
       console.error(err)
     } finally {
-    const listaAtualizada = clientes.map(c => 
-  c.id === idEditar ? { ...c, ...form } : c
-)
-setClientes(listaAtualizada)
-fecharModal()
+      window.location.reload()
+      setSalvando(false)
     }
   }
 
@@ -128,7 +125,7 @@ fecharModal()
   const editarCliente = (cliente) => {
     setModoEdicao(true)
     setModalAberto(true)
-    setIdEditar(cliente.id)
+    setIdEditar(cliente.idclientes)
     setForm({
       nome: cliente.nome,
       localizacao: cliente.localizacao,
@@ -215,7 +212,7 @@ fecharModal()
                   <AnimatePresence>
                     {clientesFiltrados.map(cliente => (
                       <motion.tr
-                        key={cliente.id}
+                        key={cliente.idclientes}
                         className="border-t hover:bg-gray-50 transition text-left max-sm:text-center"
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
