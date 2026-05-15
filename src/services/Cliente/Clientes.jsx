@@ -23,6 +23,7 @@ export default function Clientes() {
   const [vendas, setVendas] = useState([])
   const [historicoCliente, setHistoricoCliente] = useState([])
   const [clienteSelecionado, setClienteSelecionado] = useState(null)
+ const Cargo= sessionStorage.getItem("cargo")
 
   // Formulário
   const [form, setForm] = useState({
@@ -247,12 +248,12 @@ export default function Clientes() {
                           >
                             Editar
                           </button>
-                          <button
+                        {Cargo=="admin" &&  <button
                             onClick={() => eliminarCliente(cliente.idclientes)}
                             className="bg-red-500 text-white px-3 py-1 rounded hover:scale-105 transition"
                           >
                             Apagar
-                          </button>
+                          </button>}
                         
                         </td>
                         <td>  <button

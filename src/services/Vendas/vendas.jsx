@@ -15,6 +15,7 @@ import Clientes from "../Cliente/Cclientes"
 
 
 export default function Vendas() {
+
   // Estados do componente
   const [modalAberto, setModalAberto] = useState(false)
   const [modoEdicao, setModoEdicao] = useState(false)
@@ -26,7 +27,7 @@ export default function Vendas() {
   const [changeStatus, setchangeStatus] = useState(false)
   const [id, setID] = useState()
   const [id2, setID2] = useState()
-
+ const Cargo= sessionStorage.getItem("cargo")
   // Repositórios
   const repVendas = new repositorioVenda()
   const repCliente = new ClienteRepository()
@@ -330,6 +331,7 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
       window.location.reload()
     }
   }
+ 
   return (
     <Container>
       <Sidebar />
@@ -435,7 +437,7 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
                         transition={{ duration: 0.3 }}
                       >
                         <td className="p-3">{venda.idvendas}</td>
-                        <td>{venda.cliente.nome}</td>
+                  <td>{venda.cliente?.nome ?? "Cliente Local"}</td>
                         <td>{venda.itensVenda.map(i => i.mercadorias.idmercadoria +" : "+i.mercadorias.nome).join(", ")}</td>
                         <td>{venda.itensVenda.map(i => i.quantidade).join(", ")}</td>
                         <td>{venda.itensVenda.map(i => i.valorUnitario ?? i.valor_uni).join(", ")}</td>
@@ -462,12 +464,12 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
                           >
                             Editar
                           </button>
-                          <button
+                               {Cargo=="admin" &&  <button
                             onClick={() => eliminarVenda(venda.idvendas)}
                             className="bg-red-500 text-white px-3 py-1 rounded hover:scale-105 transition"
                           >
                             Apagar
-                          </button>
+                          </button>}
                         </td>
                       </motion.tr>
                     ))}

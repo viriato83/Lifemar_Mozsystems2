@@ -174,12 +174,12 @@ merc.forEach(item => {
         .reduce((acc, v) => acc + Number(v.valor_total || 0), 0)
         
         setVendasDivida(divida)
-        
-        const clientesDiv = cli.filter(c =>
-          vendasFiltradas.some(
-            v => v.cliente.idclientes === c.idclientes && v.status_p === "Em_Divida"
-          )
-        )
+      const clientesDiv = cli.filter(c =>
+  vendasFiltradas.some(
+    v => (v.cliente?.idclientes ?? 0) === c.idclientes &&
+        v.status_p === "Em_Divida"
+  )
+)
         
         setClientesComDivida(clientesDiv)
         
@@ -234,7 +234,7 @@ merc.forEach(item => {
           
           if (v.status_p === "Em_Divida") {
             
-            const nome = v.cliente.nome
+          const nome = v.cliente?.nome || "Cliente Local"
             
             clientesDivida[nome] =
             (clientesDivida[nome] || 0) + Number(v.valor_total || 0)
