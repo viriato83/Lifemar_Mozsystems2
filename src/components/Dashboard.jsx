@@ -221,22 +221,23 @@ function formatarDataLocal(data) {
     valor: valorHoje
   });
 
-  // RECEITA DIÁRIA
-  const vendasPorDia = {};
+  // RECEITA DIÁRIA (CADA VENDA)
+const receita = vendasHoje.map((v, index) => {
 
-  vendasHoje.forEach(v => {
-    const dia = formatarDataLocal(v.data);
+  let totalItens = 0;
 
-    vendasPorDia[dia] =
-      (vendasPorDia[dia] || 0) + Number(v.valor_total || 0);
+  v.itensVenda?.forEach(i => {
+    totalItens += Number(i.quantidade || 0);
   });
 
-  setReceitaDiaria(
-    Object.entries(vendasPorDia).map(([dia, valor]) => ({
-      dia,
-      valor
-    }))
-  );
+  return {
+    venda: `Venda ${index + 1}`,
+    valor: Number(v.valor_total || 0),
+    itens: totalItens
+  };
+});
+
+setReceitaDiaria(receita);
 
   // OPERADORES
   const operadores = {};
@@ -480,12 +481,24 @@ function exportarMercadoriasExcel() {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={receitaDiaria}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dia" />
+               <XAxis dataKey="venda" />
               <YAxis />
               <Tooltip />
               <Legend />
 
-              <Line type="monotone" dataKey="valor" />
+                    <Line
+                    type="monotone"
+                    dataKey="valor"
+                    stroke="#22c55e"
+                    strokeWidth={3}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="itens"
+                    stroke="#3b82f6"
+                    strokeWidth={3}
+                  />
             </LineChart>
           </ResponsiveContainer>
         </motion.div>
