@@ -15,7 +15,7 @@ export default function Login({ children }) {
     sessionStorage.getItem("ligado") === "true"
   );
 
-  const endpointSpring = "https://api3.mozsystems.com/tenant1/login";
+  const endpointSpring = "https://api3.mozsystems.com/tenant2/login";
 
   const handleLogin = async () => {
 
@@ -50,7 +50,7 @@ export default function Login({ children }) {
         setIsLoggedIn(true);
 
       }else{
-
+        console.log(response)
         setErrorMessage("Usuário ou senha incorretos");
 
       }

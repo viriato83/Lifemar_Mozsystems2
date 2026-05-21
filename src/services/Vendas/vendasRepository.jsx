@@ -222,7 +222,7 @@ export class repositorioVenda{
           if (res.status==200) {
             console.log("Deletado com sucesso");
             // this.mensagem.sucesso("Deletado com sucesso"); 
-            window.location.reload()
+            // window.location.reload()
             return true;
           } else {
             console.log("Erro ao deletar:", res.status);

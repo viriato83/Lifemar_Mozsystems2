@@ -73,7 +73,21 @@ export default function Vendas() {
     }
     read()
   }, [])
-
+async function read() {
+      setCarregando(true)
+      try {
+        const vendasList = await repVendas.leitura()
+        const clientesList = await repCliente.leitura()
+        const mercList = await repMerc.leitura()
+        setVendas(vendasList)
+        setClientes(clientesList)
+        setMercadoria(mercList)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setCarregando(false)
+      }
+    }
   // Opções para Select de mercadorias
 const mercadoriaOptions = mercadoria
   .filter(m => Number(m.quantidade) > 0) // só mercadorias com stock > 0
@@ -172,7 +186,8 @@ const mercadoriaOptions = mercadoria
       console.error(err)
     } finally {
       setSalvando(false)
-          window.location.reload()
+          // window.location.reload()
+          read()
     }
   }
 
@@ -245,7 +260,8 @@ const mercadoriaOptions = mercadoria
     console.error(err);
   } finally {
     setSalvando(false);
-    window.location.reload();
+    // window.location.reload();
+    read()
   }
   }
 
@@ -261,6 +277,7 @@ const mercadoriaOptions = mercadoria
       console.error(err)
     } finally {
       setCarregando(false)
+      read()
     }
   }
 
@@ -328,7 +345,8 @@ const totalDividas = vendasFiltradas.filter(v => v.status_p === "Em_Divida").red
       window.alert("Erro")
     } finally {
       setCarregando(false)
-      window.location.reload()
+      // window.location.reload()
+      read()
     }
   }
  

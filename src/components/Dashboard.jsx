@@ -55,7 +55,10 @@ export default function Dashboard() {
   const [vendasMensais, setVendasMensais] = useState([])
   const [produtosMaisVendidos, setProdutosMaisVendidos] = useState([])
   const [clientesMaisEndividados, setClientesMaisEndividados] = useState([])
-
+const [resumoHoje, setResumoHoje] = useState({
+  itens: 0,
+  valor: 0
+})
   const [dataInicio, setDataInicio] = useState("")
   const [dataFim, setDataFim] = useState("")
 
@@ -135,119 +138,150 @@ merc.forEach(item => {
     }
       /* ---------------- PROCESSAR VENDAS ---------------- */
       
-      function processarVendas(listaVendas, cli) {
-        
-        let vendasFiltradas = listaVendas
-        
-        if (dataInicio && dataFim) {
-          
-          vendasFiltradas = listaVendas.filter(v => {
-            
-            const dataVenda = new Date(v.data)
-            
-            return (
-              dataVenda >= new Date(dataInicio) &&
-              dataVenda <= new Date(dataFim)
-            )
-          })
-        }
-        setVendasFiltradas(vendasFiltradas)
-        setUltimasVendas(
-          vendasFiltradas.slice(-5).reverse()
-        )
-        
-        const total = vendasFiltradas.reduce(
-          (acc, v) => acc + Number(v.valor_total || 0),
-          0
-        )
-        
-        setTotalVendas(total)
-        
-        const pagas = vendasFiltradas
-        .filter(v => v.status_p === "Pago")
-        .reduce((acc, v) => acc + Number(v.valor_total || 0), 0)
-        
-        setVendasPagas(pagas)
-        
-        const divida = vendasFiltradas
-        .filter(v => v.status_p === "Em_Divida")
-        .reduce((acc, v) => acc + Number(v.valor_total || 0), 0)
-        
-        setVendasDivida(divida)
-      const clientesDiv = cli.filter(c =>
-  vendasFiltradas.some(
-    v => (v.cliente?.idclientes ?? 0) === c.idclientes &&
-        v.status_p === "Em_Divida"
-  )
-)
-        
-        setClientesComDivida(clientesDiv)
-        
-        /* VENDAS POR MES */
-        
-        const vendasPorMes = {}
-        
-        vendasFiltradas.forEach(v => {
-          
-          const mes = new Date(v.data).toLocaleString(
-            "default",
-            { month: "short", year: "numeric" }
-          )
-          
-          vendasPorMes[mes] =
-          (vendasPorMes[mes] || 0) + Number(v.valor_total || 0)
-        })
-        
-        setVendasMensais(
-          Object.entries(vendasPorMes).map(([mes, valor]) => ({
-            mes,
-            valor
-          }))
-        )
-        
-        /* PRODUTOS MAIS VENDIDOS */
-        
-        const produtosCount = {}
-        
-        vendasFiltradas.forEach(v => {
-          v.itensVenda.forEach(i => {
-            
-            const nome = i.mercadorias.nome
-            
-            produtosCount[nome] =
-            (produtosCount[nome] || 0) + i.quantidade
-          })
-        })
-        
-        setProdutosMaisVendidos(
-          Object.entries(produtosCount)
-          .map(([nome, qtd]) => ({ nome, qtd }))
-          .sort((a, b) => b.qtd - a.qtd)
-          .slice(0, 5)
-        )
-        
-        /* CLIENTES MAIS ENDIVIDADOS */
-        
-        const clientesDivida = {}
-        
-        vendasFiltradas.forEach(v => {
-          
-          if (v.status_p === "Em_Divida") {
-            
-          const nome = v.cliente?.nome || "Cliente Local"
-            
-            clientesDivida[nome] =
-            (clientesDivida[nome] || 0) + Number(v.valor_total || 0)
-          }
-        })
-        
-        setClientesMaisEndividados(
-          Object.entries(clientesDivida)
-          .map(([nome, valor]) => ({ nome, valor }))
-          .sort((a, b) => b.valor - a.valor)
-          .slice(0, 5)
-        )
-      }
+      const [receitaDiaria, setReceitaDiaria] = useState([])
+      const [vendasOperador, setVendasOperador] = useState([])
+      const [comparacaoMensal, setComparacaoMensal] = useState([])
+      const today = new Date().toISOString().split("T")[0];
+const [selectedDate, setSelectedDate] = useState(today);
+function formatarDataLocal(data) {
+  const d = new Date(data);
+
+  const ano = d.getFullYear();
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+
+  return `${ano}-${mes}-${dia}`;
+}
+     function processarVendas(listaVendas, cli) {
+
+  let vendasFiltradas = [...listaVendas];
+
+  // FILTRO DATA
+  if (dataInicio && dataFim) {
+    vendasFiltradas = vendasFiltradas.filter(v => {
+      const d = new Date(v.data);
+      return d >= new Date(dataInicio) && d <= new Date(dataFim);
+    });
+  }
+
+  setVendasFiltradas(vendasFiltradas);
+  setUltimasVendas(vendasFiltradas.slice(-5).reverse());
+
+  // TOTAL
+  const total = vendasFiltradas.reduce(
+    (acc, v) => acc + Number(v.valor_total || 0),
+    0
+  );
+  setTotalVendas(total);
+
+  // PAGAS
+  setVendasPagas(
+    vendasFiltradas
+      .filter(v => v.status_p === "Pago")
+      .reduce((a, v) => a + Number(v.valor_total || 0), 0)
+  );
+
+  // DÍVIDA
+  setVendasDivida(
+    vendasFiltradas
+      .filter(v => v.status_p === "Em_Divida")
+      .reduce((a, v) => a + Number(v.valor_total || 0), 0)
+  );
+
+  // CLIENTES COM DÍVIDA
+  const clientesDiv = cli.filter(c =>
+    vendasFiltradas.some(
+      v => (v.cliente?.idclientes ?? 0) === c.idclientes &&
+           v.status_p === "Em_Divida"
+    )
+  );
+
+  setClientesComDivida(clientesDiv);
+
+  // =======================
+  // 🔥 HOJE (CORRIGIDO)
+  // =======================
+  const vendasHoje = vendasFiltradas.filter(v =>
+    formatarDataLocal(v.data) === selectedDate
+  );
+
+  let itensHoje = 0;
+  let valorHoje = 0;
+
+  vendasHoje.forEach(v => {
+    valorHoje += Number(v.valor_total || 0);
+
+    v.itensVenda?.forEach(i => {
+      itensHoje += Number(i.quantidade || 0);
+    });
+  });
+
+  setResumoHoje({
+    itens: itensHoje,
+    valor: valorHoje
+  });
+
+  // RECEITA DIÁRIA
+  const vendasPorDia = {};
+
+  vendasHoje.forEach(v => {
+    const dia = formatarDataLocal(v.data);
+
+    vendasPorDia[dia] =
+      (vendasPorDia[dia] || 0) + Number(v.valor_total || 0);
+  });
+
+  setReceitaDiaria(
+    Object.entries(vendasPorDia).map(([dia, valor]) => ({
+      dia,
+      valor
+    }))
+  );
+
+  // OPERADORES
+  const operadores = {};
+
+  vendasFiltradas.forEach(v => {
+    const op = v.usuario?.login || "Sistema";
+    operadores[op] = (operadores[op] || 0) + Number(v.valor_total || 0);
+  });
+
+  setVendasOperador(
+    Object.entries(operadores).map(([nome, valor]) => ({ nome, valor }))
+  );
+
+  // MENSAL
+  const meses = {};
+
+  vendasFiltradas.forEach(v => {
+    const mes = new Date(v.data).toLocaleString("default", {
+      month: "short"
+    });
+
+    meses[mes] = (meses[mes] || 0) + Number(v.valor_total || 0);
+  });
+
+  setComparacaoMensal(
+    Object.entries(meses).map(([mes, valor]) => ({ mes, valor }))
+  );
+
+  // PRODUTOS MAIS VENDIDOS
+  const produtos = {};
+
+  vendasFiltradas.forEach(v => {
+    v.itensVenda?.forEach(i => {
+      const nome = i.mercadorias?.nome;
+      produtos[nome] = (produtos[nome] || 0) + i.quantidade;
+    });
+  });
+
+  setProdutosMaisVendidos(
+    Object.entries(produtos)
+      .map(([nome, qtd]) => ({ nome, qtd }))
+      .sort((a, b) => b.qtd - a.qtd)
+      .slice(0, 5)
+  );
+}
       
       function aplicarFiltro() {
         if(!dataInicio || !dataFim){
@@ -265,6 +299,12 @@ merc.forEach(item => {
       /* ---------------- KPIs ---------------- */
       
       const kpis = [
+        
+        {
+        title: "Vendas Hoje (Itens)",
+        value: `${resumoHoje.itens} itens - ${resumoHoje.valor.toLocaleString()} MT`,
+        color: "text-cyan-400"
+      },
         { title: "Total Clientes", value: clientes.length, color: "text-blue-400" },
         { title: "Mercadorias em Stock", value: stockAtual, color: "text-yellow-400" },
         { title: "Total Vendas", value: totalVendas.toLocaleString() + " MT", color: "text-green-400" },
@@ -407,6 +447,7 @@ function exportarMercadoriasExcel() {
         {/* KPIs */}
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-6">
+          
           {kpis.map((card, i) => (
             <motion.div
               key={i}
@@ -415,6 +456,7 @@ function exportarMercadoriasExcel() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
+              
               <h3 className="text-sm text-gray-400">{card.title}</h3>
 
               <p className={`text-2xl font-bold mt-2 ${card.color}`}>
@@ -428,7 +470,21 @@ function exportarMercadoriasExcel() {
         </section>
         {/* GRÁFICOS */}
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+       <motion.div className="bg-gray-900 p-6 rounded-xl">
+          <h3 className="mb-4">Receita Diária</h3>
 
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={receitaDiaria}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="dia" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+
+              <Line type="monotone" dataKey="valor" />
+            </LineChart>
+          </ResponsiveContainer>
+        </motion.div>
           <motion.div className="lg:col-span-2 bg-gray-900 p-6 rounded-xl">
             <h3 className="mb-4">Vendas Mensais</h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -444,6 +500,21 @@ function exportarMercadoriasExcel() {
             </ResponsiveContainer>
           </motion.div>
           <motion.div className="bg-gray-900 p-6 rounded-xl">
+          <h3 className="mb-4">Vendas por Operador</h3>
+
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={vendasOperador}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="nome" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+
+              <Bar dataKey="valor" />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+          <motion.div className="bg-gray-900 p-6 rounded-xl">
             <h3 className="mb-4">Produtos Mais Vendidos</h3>
             <ResponsiveContainer width="100%" height={300}>
             <BarChart data={produtosMaisVendidos} layout="vertical">
@@ -457,6 +528,21 @@ function exportarMercadoriasExcel() {
               </BarChart>
             </ResponsiveContainer>
 
+          </motion.div>
+            <motion.div className="bg-gray-900 p-6 rounded-xl">
+            <h3 className="mb-4">Comparação Mensal</h3>
+
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={comparacaoMensal}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="mes" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+
+                <Bar dataKey="valor" />
+              </BarChart>
+            </ResponsiveContainer>
           </motion.div>
         </section>
 

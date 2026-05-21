@@ -73,6 +73,7 @@ export default function Sidebar() {
               { name: "Mercadorias", icon: ShoppingCartIcon, to: "/mercadorias" },
               { name: "Vendas", icon: CubeIcon, to: "/vendas" },
               { name: "Stock", icon: CubeIcon, to: "/stock" },
+              { name: "Auditoria", icon: CubeIcon, to: "/auditoria" },
               // { name: "Configurações", icon: CogIcon, to: "#" },
             ].map((item, idx) => (
               <li key={idx} className="group py-2">

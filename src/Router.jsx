@@ -5,6 +5,7 @@ import Vendas from './services/Vendas/vendas'
 import Mercadorias from './services/Mercadoria/Mercadorias'
 import Stock from './services/Stock/StockPRi'
 import Clientes from './services/Cliente/Clientes'
+import Auditoria from './services/Auditoria/Autitoria'
 
 export default function BrowseRouter() {
   return (
@@ -14,6 +15,7 @@ export default function BrowseRouter() {
         <Route path="/vendas" element={<Vendas />} />
 <Route path="/mercadorias" element={<Mercadorias />} />
 <Route path="/stock" element={<Stock />} />
+<Route path="/auditoria" element={<Auditoria />} />
 <Route path="/clientes" element={<Clientes />} />
         </Routes>
     </Router>

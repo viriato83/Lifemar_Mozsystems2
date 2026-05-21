@@ -55,6 +55,20 @@ export default function Clientes() {
     read()
   }, [])
 
+   async function read() {
+      setCarregando(true)
+      try {
+        const dataClientes = await repCliente.leitura()
+        const dataVendas = await repVendas.leitura()
+        setClientes(dataClientes)
+        setVendas(dataVendas)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setCarregando(false)
+      }
+    }
+
   // Validação do formulário
   const validarForm = () => {
     if (!form.nome) return "Informe o nome"
@@ -81,8 +95,9 @@ export default function Clientes() {
       status_p: "Pendente"
     }
 
-   await repCliente.cadastrar(clienteComStatus)
-
+   
+   const novoCliente =await repCliente.cadastrar(clienteComStatus)
+  setClientes(prev => [...prev, novoCliente])
 
     fecharModal()
 
@@ -91,7 +106,8 @@ export default function Clientes() {
     
     console.error(err)
   } finally {
-    window.location.reload()
+    read()
+    // window.location.reload()
     setSalvando(false)
   }
 }
@@ -107,13 +123,22 @@ export default function Clientes() {
     setErroForm("")
     try {
       await repCliente.editar(idEditar, form)
-      
+        setClientes(prev =>
+      prev.map(cliente =>
+         cliente.idclientes === idEditar
+            ? { ...cliente, ...form }
+            : cliente
+      )
+   )
+
       fecharModal()
     } catch (err) {
       setErroForm("Falha ao atualizar cliente")
       console.error(err)
     } finally {
-      window.location.reload()
+      // window.location.reload()
+    read()
+
       setSalvando(false)
     }
   }
@@ -124,14 +149,16 @@ export default function Clientes() {
     try {
       setCarregando(true)
       await repCliente.deletar(id)
-      // setClientes(clientes.filter(c => c.id !== id))
+      setClientes(clientes.filter(c => c.id !== id))
     } catch (err) {
       window.alert("Erro ao eliminar cliente")
       console.error(err)
     } finally {
 
       setCarregando(false)
-      window.location.reload()
+      // window.location.reload()
+    read()
+
     }
   }
 
@@ -159,9 +186,9 @@ export default function Clientes() {
   }
 
   // Filtrar clientes
-  const clientesFiltrados = clientes.filter(c =>
-    c.nome.toLowerCase().includes(pesquisa.toLowerCase())
-  )
+const clientesFiltrados = clientes.filter(c =>
+   c?.nome?.toLowerCase().includes(pesquisa.toLowerCase())
+)
 
   // Ver histórico do cliente
   const verHistorico = (cliente) => {

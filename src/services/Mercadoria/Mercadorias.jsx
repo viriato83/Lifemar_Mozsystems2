@@ -53,7 +53,19 @@ const [mostrarDisponiveis, setMostrarDisponiveis] = useState(false)
     }
     read()
   }, [])
-
+  async function read() {
+      setCarregando(true)
+      try {
+        const listaMerc = await repMerc.leitura()
+        const listaStocks = await repStk.leitura()
+        setMercadorias(listaMerc)
+        setStocks(listaStocks)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setCarregando(false)
+      }
+    }
 const stockOptions = stocks
 
   .map(s => ({
@@ -112,7 +124,8 @@ const stockOptions = stocks
     console.error(err)
   } finally {
     setSalvando(false)
-    window.location.reload()
+    // window.location.reload()
+    read()
   }
 }
 
@@ -183,7 +196,8 @@ const stockOptions = stocks
     console.error(err)
   } finally {
     setSalvando(false)
-    window.location.reload()
+    // window.location.reload()
+    read()
   }
 }
   const editarMercadoria = (m) => {
@@ -214,7 +228,8 @@ const stockOptions = stocks
     } finally {
       
       setCarregando(false)
-      window.location.reload()
+      // window.location.reload()
+      read()
     }
   }
 

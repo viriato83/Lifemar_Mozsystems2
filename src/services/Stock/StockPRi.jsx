@@ -54,7 +54,19 @@ export default function Stock() {
     }
     read()
   }, [])
-
+ async function read() {
+      setCarregando(true)
+      try {
+        const stockList = await repStock.leitura()
+        const mercList = await repStock.buscarMercadoria()
+        setStocks(stockList)
+        setMercadorias(mercList)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setCarregando(false)
+      }
+    }
   // Opções de Select
   const mercOptions = mercadorias.map(m => ({
     value: m.idmercadoria,
@@ -97,7 +109,8 @@ export default function Stock() {
       console.error(err)
     } finally {
       setSalvando(false)
-      window.location.reload()
+      // window.location.reload()
+      read()
     }
   }
 
@@ -128,7 +141,8 @@ export default function Stock() {
       console.error(err)
     } finally {
       setSalvando(false)
-      window.location.reload()
+      // window.location.reload()
+      read()
     }
   }
 
@@ -144,6 +158,7 @@ export default function Stock() {
       console.error(err)
     } finally {
       setCarregando(false)
+      read()
     }
   }
 
@@ -259,7 +274,7 @@ const stocksFiltrados = stocks
                               Editar
                             </button>
                             <button
-                              onClick={() => eliminarStock(stock.id)}
+                              onClick={() => eliminarStock(stock.idstock)}
                               className="bg-red-500 text-white px-3 py-1 rounded hover:scale-105 transition"
                             >
                               Apagar

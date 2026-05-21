@@ -45,6 +45,13 @@ export default class  repositorioMercadoria{
               'Content-Type': 'application/json'
             }
           });
+          if(res.status==403){
+                 // limpa sessão
+              sessionStorage.clear();
+
+              // redireciona login
+              window.location.href = "/";
+          }
     
           if (res.status== 200) {
             const data = await res.json();
