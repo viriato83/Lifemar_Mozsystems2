@@ -261,9 +261,13 @@ function formatarDataLocal(data) {
     meses[mes] = (meses[mes] || 0) + Number(v.valor_total || 0);
   });
 
-  setComparacaoMensal(
-    Object.entries(meses).map(([mes, valor]) => ({ mes, valor }))
-  );
+const dadosMensais = Object.entries(meses).map(([mes, valor]) => ({
+  mes,
+  valor
+}));
+
+setComparacaoMensal(dadosMensais);
+setVendasMensais(dadosMensais);
 
   // PRODUTOS MAIS VENDIDOS
   const produtos = {};
