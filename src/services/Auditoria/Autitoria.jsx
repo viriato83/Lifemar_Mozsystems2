@@ -24,7 +24,7 @@ export default function Auditoria() {
       setCarregando(true)
 
       const res = await axios.get(
-        `https://api3.mozsystems.com/tenant2/auditoria`,
+        `https://api3.mozsystems.dev/tenant2/auditoria`,
         {
           headers: {
             Authorization: `Bearer ${token}`

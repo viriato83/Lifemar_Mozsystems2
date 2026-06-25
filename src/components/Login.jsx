@@ -15,7 +15,7 @@ export default function Login({ children }) {
     sessionStorage.getItem("ligado") === "true"
   );
 
-  const endpointSpring = "https://api3.mozsystems.com/tenant2/login";
+  const endpointSpring = "https://api3.mozsystems.dev/tenant2/login";
 
   const handleLogin = async () => {
 

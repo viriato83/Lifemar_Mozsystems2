@@ -6,7 +6,7 @@ export default class repositorioStock{
 
 
     constructor(){
-        this.endpoint =" https://api3.mozsystems.com/tenant2/stock"
+        this.endpoint =" https://api3.mozsystems.dev/tenant2/stock"
         // this.mensagem= new mensagem()
           this.token=sessionStorage.getItem("token");
    
