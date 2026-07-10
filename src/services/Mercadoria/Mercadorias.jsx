@@ -383,6 +383,7 @@ const mercadoriasFiltradas = mercadorias
                         <td>{m.quantidade_est}</td>
                         <td>{m.quantidade}</td>
                         <td>{m.valor_un}</td>
+                        <td>{m.valor_total}</td>
                         <td>{m.data_entrada}</td>
                         <td>{m.data_saida}</td>
                         <td>{(m.quantidade * m.valor_un).toLocaleString()}</td>
