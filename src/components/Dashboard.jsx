@@ -51,7 +51,7 @@ export default function Dashboard() {
   const [vendasDivida, setVendasDivida] = useState(0)
 
   const [produtosCriticos, setProdutosCriticos] = useState([])
-
+  const [Mercadorias,SetMercadorias]=useState([])
   const [vendasMensais, setVendasMensais] = useState([])
   const [produtosMaisVendidos, setProdutosMaisVendidos] = useState([])
   const [clientesMaisEndividados, setClientesMaisEndividados] = useState([])
@@ -72,27 +72,26 @@ const [resumoHoje, setResumoHoje] = useState({
         const cli = await clienteRepo.leitura()
         setClientes(cli)
         
-        
-        const merc = await mercRepo.leitura()
-        
-        let totalStock = 0
-        merc.forEach(m => {
-          totalStock += Number(m.quantidade)
-        })
-        
-        setStockAtual(totalStock)
-        
+      const merc = await mercRepo.leitura();
+
+
+        let totalStock = merc.reduce(
+          (total, m) => total + Number(m.quantidade),
+          0
+        );
+
+        setStockAtual(totalStock);
+          SetMercadorias(merc)
         setMercadoriasRecentes(
           merc
-          .sort((a, b) => new Date(b.data_entrada) - new Date(a.data_entrada))
-          .slice(0, 5)
-        )
-        
-        /* AGRUPAR PRODUTOS PARA ALERTA */
-        
-        const agrupadas = {}
+            .sort((a, b) => new Date(b.data_entrada) - new Date(a.data_entrada))
+            .slice(0, 5)
+        );
+                /* AGRUPAR PRODUTOS PARA ALERTA */
+                
+                const agrupadas = {}
 
-merc.forEach(item => {
+        merc.forEach(item => {
 
   const nome = item.nome.toLowerCase()
 
@@ -136,6 +135,35 @@ merc.forEach(item => {
         setCarregando(false)
       }
     }
+
+    function processarMercadorias(listaMercadorias) {
+
+  let mercFiltradas = [...listaMercadorias];
+
+  if (dataInicio && dataFim) {
+    mercFiltradas = mercFiltradas.filter(m => {
+      const data = new Date(m.data_entrada);
+
+      return (
+        data >= new Date(dataInicio) &&
+        data <= new Date(dataFim)
+      );
+    });
+  }
+
+  setMercadoriasRecentes(
+    mercFiltradas
+      .sort((a, b) => new Date(b.data_entrada) - new Date(a.data_entrada))
+      .slice(0, 5)
+  );
+
+  const totalStock = mercFiltradas.reduce(
+    (total, m) => total + Number(m.quantidade),
+    0
+  );
+
+  setStockAtual(totalStock);
+}
       /* ---------------- PROCESSAR VENDAS ---------------- */
       
       const [receitaDiaria, setReceitaDiaria] = useState([])
@@ -299,6 +327,7 @@ setVendasMensais(dadosMensais);
         });
         }
         processarVendas(vendas, clientes)
+      processarMercadorias(Mercadorias)
       }
       
       /* ---------------- KPIs ---------------- */
