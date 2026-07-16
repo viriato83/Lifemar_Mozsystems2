@@ -193,9 +193,9 @@ const clientesFiltrados = clientes.filter(c =>
   // Ver histórico do cliente
   const verHistorico = (cliente) => {
     setClienteSelecionado(cliente)
-    const historico = vendas
-      .filter(v => v.cliente.idclientes === cliente.idclientes)
-      .sort((a, b) => new Date(b.data) - new Date(a.data)) // mais recente primeiro
+   const historico = vendas
+  .filter(v => v.cliente?.idclientes === cliente.idclientes)
+  .sort((a, b) => new Date(b.data) - new Date(a.data));
     setHistoricoCliente(historico)
     setModalAberto(true)
   }

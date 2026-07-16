@@ -265,9 +265,9 @@ const mercadoriasFiltradas = mercadorias
   .sort((a, b) => new Date(b.data_entrada) - new Date(a.data_entrada))
 
   // Cards resumidos
-  const totalMercadorias = mercadorias.length
-  const totalEstoque = mercadorias.reduce((acc, m) => acc + Number(m.quantidade || 0), 0)
-  const valorTotal = mercadorias.reduce((acc, m) => acc + (Number(m.valor_un || 0) * Number(m.quantidade || 0)), 0)
+  const totalMercadorias = mercadoriasFiltradas.length
+  const totalEstoque = mercadoriasFiltradas.reduce((acc, m) => acc + Number(m.quantidade || 0), 0)
+  const valorTotal = mercadoriasFiltradas.reduce((acc, m) => acc + (Number(m.valor_un || 0) * Number(m.quantidade || 0)), 0)
 
   return (
     <Container>
@@ -386,7 +386,6 @@ const mercadoriasFiltradas = mercadorias
                         <td>{m.valor_total}</td>
                         <td>{m.data_entrada}</td>
                         <td>{m.data_saida}</td>
-                        <td>{(m.quantidade * m.valor_un).toLocaleString()}</td>
                         <td>{m.stock?.idstock+" : "+m.stock?.tipo}</td>
                         <td className="space-x-2">
                           <button
